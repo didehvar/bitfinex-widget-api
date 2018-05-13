@@ -17,6 +17,14 @@ router.get('/symbols', async ctx => {
   ctx.body = await res.json();
 });
 
+router.get('/tickers', async ctx => {
+  console.log(ctx.query.symbols);
+  const res = await fetch(
+    `https://api.bitfinex.com/v2/tickers?symbols=${ctx.query.symbols}`,
+  );
+  ctx.body = await res.json();
+});
+
 app.use(router.routes()).use(router.allowedMethods());
 app.ws.use(sockets.routes()).use(sockets.allowedMethods());
 
