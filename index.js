@@ -1,9 +1,12 @@
-var Koa = require('koa');
-var Router = require('koa-router');
+const Koa = require('koa');
+const Router = require('koa-router');
 const fetch = require('node-fetch');
+const websockify = require('koa-websocket');
 
-var app = new Koa();
-var router = new Router();
+const sockets = require('./sockets');
+
+const app = websockify(new Koa());
+const router = new Router();
 
 router.get('/', (ctx, next) => {
   ctx.body = 'hello world';
@@ -15,5 +18,6 @@ router.get('/symbols', async ctx => {
 });
 
 app.use(router.routes()).use(router.allowedMethods());
+app.ws.use(sockets.routes()).use(sockets.allowedMethods());
 
 app.listen(3001);
