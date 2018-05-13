@@ -9,7 +9,14 @@ router.get('/socket', async ctx => {
   ctx.websocket.on('open', () => console.log('websocket open'));
 
   w.on('message', message => {
-    ctx.websocket.send(message);
+    switch (ctx.websocket.readyState) {
+      case ws.OPEN:
+        return ctx.websocket.send(message);
+      case ws.CLOSED:
+        return w.close();
+      default:
+        console.log('Unhandled readyState', ctx.websocket.readyState);
+    }
   });
 
   const sendWhenReady = message => {
